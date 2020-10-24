@@ -16,6 +16,7 @@ def scrape():
         'hemispheres': hemispheres(browser)
     }
 
+    browser.quit()
     return mars_data
 
 # ### NASA Mars News
@@ -49,8 +50,9 @@ def featured_img(browser):
 # * Use Pandas to convert the data to a HTML table string.
 def mars_facts():
     mars_facts = pd.read_html('https://space-facts.com/mars')[0]
-    return mars_facts
-
+    mars_facts.columns = ['Description', 'values']
+    mars_facts = mars_facts.set_index('Description')
+    return mars_facts.to_html(classes='table table-striped')
 
 # ### Mars Hemispheres
 # * Visit the USGS Astrogeology site [here](https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars) to obtain high resolution images for each of Mar's hemispheres.
@@ -71,7 +73,8 @@ def hemispheres(browser):
         hemisphere['img_url'] = browser.find_link_by_partial_text('Sample')['href']
         hemispheres.append(hemisphere)
         browser.back()
-        return hemispheres
+
+    return hemispheres
 
 
 
